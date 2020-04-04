@@ -10,6 +10,16 @@
     <body>
         <p>Sleep Monitoring with Bluetooth</p>
 
-        <script type="text/javascript" src="Sleep_Monitor_BLE.js"></script>
+        <button id='connect'>Connect</button>
+          
+        <script>
+            document.getElementById("connect").addEventListener('pointerup', function(event) {
+                navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true
+                })
+                .then(device => { /* ... */ })
+                .catch(error => { console.log(error); });
+            });
+        </script>
     </body>
 </html>

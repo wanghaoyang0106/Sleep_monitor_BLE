@@ -6,6 +6,7 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
         filters: [{
             name: 'Arduino'
         }],
+        optionalServices: ['00001234-0000-0000-0001-000000000000']
     })
     .then(device => { // connect to the device
         console.log(device.name);

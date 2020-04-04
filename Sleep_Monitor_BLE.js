@@ -16,11 +16,11 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
     })
     .then(server => { // get service
         console.log('Getting Service...');
-        return server.getPrimaryService('0x0001');
+        return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
     })
     .then(service => { // get characteristic
         console.log('Getting Characteristic...');
-        return service.getCharacteristic('0x0001');
+        return service.getCharacteristic('00001234-0000-0000-0001-000000000001');
     })
     .then(characteristic => characteristic.startNotifications())
     .then(characteristic => {

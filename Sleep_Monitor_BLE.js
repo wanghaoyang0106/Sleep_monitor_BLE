@@ -34,9 +34,8 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
 
 function handleCapacitanceChanged(event) {
     let CapacitanceValue = event.target.value.getFloat32(0, true);
-    console.log('CapacitanceValue:');
-    console.log(CapacitanceValue);
     document.write(CapacitanceValue);
+    document.write('\n');
 }
 
 function onDisconnected() {

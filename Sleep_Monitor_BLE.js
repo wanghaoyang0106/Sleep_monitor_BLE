@@ -1,5 +1,4 @@
-let device = await navigator.bluetooth.requestDevice({
-    //filters: [ 
-    //    { namePrefix: 'Capacitance' } 
-    //]
-});
+alert("你好！")
+let device = navigator.bluetooth.requestDevice({
+    acceptAllDevices: true
+  });

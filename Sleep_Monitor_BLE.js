@@ -33,8 +33,8 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
 });
 
 function handleCapacitanceChanged(event) {
-    let CapacitanceValue_little = event.target.value.getFloat32(0, littleEndian);
-    let CapacitanceValue_big = event.target.value.getFloat32(0);
+    let CapacitanceValue_little = event.target.value.getFloat32(0, true);
+    let CapacitanceValue_big = event.target.value.getFloat32(0, false);
     console.log('CapacitanceValue_little:');
     console.log(CapacitanceValue_little);
     console.log('CapacitanceValue_big:');

@@ -1,4 +1,6 @@
-alert("你好！")
-let device = navigator.bluetooth.requestDevice({
-    acceptAllDevices: true
-  });
+navigator.bluetooth.requestDevice({
+    acceptAllDevices: true,
+    optionalServices: ['battery_service']
+  })
+  .then(device => { /* ... */ })
+  .catch(error => { console.log(error); });

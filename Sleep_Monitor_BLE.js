@@ -1,5 +1,7 @@
 var bluetoothDevice;
-var capacitanceCharacteristic;
+var capacitanceService;
+var capacitanceTime;
+var capacitanceValue;
 
 document.getElementById("start").addEventListener('pointerup', function(event) {
     navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
@@ -17,25 +19,35 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
     })
     .then(server => { // get service
         console.log('Getting Service...');
-        return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
+        capacitanceService = server.getPrimaryService('00001234-0000-0000-0001-000000000000');
+        // return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
     })
-    .then(service => { // get characteristic
-        console.log('Getting Characteristic...');
-        return service.getCharacteristic('00001234-0000-0000-0001-000000000001');
-    })
+    .catch(error => { console.log(error); });
+
+    // get time characteristic
+    console.log('Getting Time Characteristic...');
+    capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
     .then(characteristic => characteristic.startNotifications())
     .then(characteristic => {
-        capacitanceCharacteristic = characteristic;
-        capacitanceCharacteristic.addEventListener('characteristicvaluechanged',
+        capacitanceTime = characteristic;
+        capacitanceTime.addEventListener('characteristicvaluechanged',
             handleCapacitanceChanged);
+    })
+    .catch(error => { console.log(error); });
+
+    // get value characteristic
+    console.log('Getting Value Characteristic...');
+    capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
+    .then(characteristic => {
+        capacitanceValue = characteristic;
     })
     .catch(error => { console.log(error); });
 });
 
 function handleCapacitanceChanged(event) {
-    let CapacitanceValue = event.target.value.getFloat32(0, true);
-    document.write(CapacitanceValue);
-    document.write("<br>");
+    let time = event.target.value.getUint32(0, true);
+    let val = capacitanceValue.value.getFloat32(0, true);
+    document.write(time, "&#9", val, "<br>");
 }
 
 function onDisconnected() {

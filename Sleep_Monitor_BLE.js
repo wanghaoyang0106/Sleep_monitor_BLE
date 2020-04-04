@@ -17,31 +17,30 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
         // Attempts to connect to remote GATT Server.
         return device.gatt.connect();
     })
-    .then(server => { // get service
+    .then(server => { // get service and characteristics
         console.log('Getting Service...');
         capacitanceService = server.getPrimaryService('00001234-0000-0000-0001-000000000000');
         // return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
-    })
-    .catch(error => { console.log(error); });
 
-    // get time characteristic
-    console.log('Getting Time Characteristic...');
-    capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
-    .then(characteristic => characteristic.startNotifications())
-    .then(characteristic => {
-        capacitanceTime = characteristic;
-        capacitanceTime.addEventListener('characteristicvaluechanged',
+        console.log('Getting Time Characteristic...');
+        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
+        .then(characteristic => characteristic.startNotifications())
+        .then(characteristic => {
+            capacitanceTime = characteristic;
+            capacitanceTime.addEventListener('characteristicvaluechanged',
             handleCapacitanceChanged);
-    })
-    .catch(error => { console.log(error); });
+        })
+        .catch(error => { console.log(error); });
 
-    // get value characteristic
-    console.log('Getting Value Characteristic...');
-    capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
-    .then(characteristic => {
-        capacitanceValue = characteristic;
+        console.log('Getting Value Characteristic...');
+        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
+        .then(characteristic => {
+            capacitanceValue = characteristic;
+        })
+        .catch(error => { console.log(error); });
     })
     .catch(error => { console.log(error); });
+    
 });
 
 function handleCapacitanceChanged(event) {

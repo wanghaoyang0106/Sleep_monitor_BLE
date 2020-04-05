@@ -50,7 +50,7 @@ function handleCapacitanceChanged(event) {
 	capacitanceValue.readValue()
 	.then(value => {
 		let val = value.getFloat32(0, true);
-		document.write(time, "&#9", val, "<br>");
+		document.write(time, "<br>", val, "<br>");
 	});
 }
 

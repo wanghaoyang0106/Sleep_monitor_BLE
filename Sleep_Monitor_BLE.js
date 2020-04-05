@@ -41,13 +41,16 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
 			.then(characteristic => characteristic.startNotifications())
 			.then(characteristic => {
 				capacitanceTime = characteristic;
-				
-				// initial plot
-				capacitanceTime_plot = capacitanceTime.getUint32(0, true);
-				chartPlot();
 
+				// initial plot
+				capacitanceTime.readValue()
+				.then(value => {
+					capacitanceTime_plot = value.getUint32(0, true);
+					chartPlot();
+				});
 				capacitanceTime.addEventListener('characteristicvaluechanged',
 					handleCapacitanceChanged);
+
 			});
 		});
 	})

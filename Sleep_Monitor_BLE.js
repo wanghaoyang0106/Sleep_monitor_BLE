@@ -21,25 +21,26 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
         console.log('Getting Service...');
         return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
 	})
-	.then(service => { // get value characteristic
+	.then(service => {
 		capacitanceService = service;
 
+		// get value characteristic
 		console.log('Getting Value Characteristic...');
         capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
         .then(characteristic => {
             capacitanceValue = characteristic;
+		})
+		.then(_ => { // get time characteristic
+			console.log('Getting Time Characteristic...');
+			capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
+			.then(characteristic => characteristic.startNotifications())
+			.then(characteristic => {
+				capacitanceTime = characteristic;
+				capacitanceTime.addEventListener('characteristicvaluechanged',
+				handleCapacitanceChanged);
+			});
 		});
 	})
-	.then(_ => { // get time characteristic
-        console.log('Getting Time Characteristic...');
-        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
-        .then(characteristic => characteristic.startNotifications())
-        .then(characteristic => {
-            capacitanceTime = characteristic;
-            capacitanceTime.addEventListener('characteristicvaluechanged',
-            handleCapacitanceChanged);
-        });
-    })
 	.catch(error => { console.log(error); });
     
 });

@@ -1,8 +1,3 @@
-console.log(1);
-console.log(2);
-console.log(3);
-console.log(4);
-
 var bluetoothDevice;
 var capacitanceService;
 var capacitanceTime;
@@ -11,7 +6,7 @@ var capacitanceValue;
 var capacitanceTime_plot = 0.0;
 var capacitanceValue_plot = 0.0;
 
-var plotInterval = 0.6; //interval of each plot (s)
+var plotInterval = 600; //interval of each plot (ms)
 
 document.getElementById("start").addEventListener('pointerup', function(event) {
     navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
@@ -140,7 +135,7 @@ function chartPlot() {
 					i;
 				for (i = -59; i <= 0; i += 1) {
 					data.push({
-						x: time + i * plotInterval,
+						x: time + i * plotInterval / 1000.0,
 						y: 0
 					});
 				}

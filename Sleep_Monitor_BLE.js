@@ -17,28 +17,28 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
         // Attempts to connect to remote GATT Server.
         return device.gatt.connect();
     })
-    .then(server => { // get service and characteristics
+    .then(server => { // get service
         console.log('Getting Service...');
         return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
 	})
-	.then(service => {
-		capacitanceService = service;
+	.then(service => { // get value characteristic
+		console.log('Getting Value Characteristic...');
+        service.getCharacteristic('00001234-0000-0000-0001-000000000002')
+        .then(characteristic => {
+            capacitanceValue = characteristic;
+		});
+	})
+	.then(service => { // get time characteristic
         console.log('Getting Time Characteristic...');
-        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
+        service.getCharacteristic('00001234-0000-0000-0001-000000000001')
         .then(characteristic => characteristic.startNotifications())
         .then(characteristic => {
             capacitanceTime = characteristic;
             capacitanceTime.addEventListener('characteristicvaluechanged',
             handleCapacitanceChanged);
         });
-
-        console.log('Getting Value Characteristic...');
-        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
-        .then(characteristic => {
-            capacitanceValue = characteristic;
-        })
-        .catch(error => { console.log(error); });
-    });
+    })
+	.catch(error => { console.log(error); });
     
 });
 

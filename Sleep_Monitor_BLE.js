@@ -3,10 +3,10 @@ var capacitanceService;
 var capacitanceTime;
 var capacitanceValue;
 
-var capacitanceTime_plot = 0;
-var capacitanceValue_plot = 0;
+var capacitanceTime_plot = 0.0;
+var capacitanceValue_plot = 0.0;
 
-var plotInterval = 600; //interval of each plot (ms)
+var plotInterval = 0.6; //interval of each plot (s)
 
 document.getElementById("start").addEventListener('pointerup', function(event) {
     navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
@@ -45,7 +45,7 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
 				// initial plot
 				capacitanceTime.readValue()
 				.then(value => {
-					capacitanceTime_plot = value.getUint32(0, true);
+					capacitanceTime_plot = parseFloat(value.getUint32(0, true)) / 1000;
 					chartPlot();
 				});
 				capacitanceTime.addEventListener('characteristicvaluechanged',
@@ -63,9 +63,9 @@ function handleCapacitanceChanged(event) {
 	capacitanceValue.readValue()
 	.then(value => {
 		let val = value.getFloat32(0, true);
-		//document.write(time, "<br>", val, "<br>");
-		console.log(val);
-    	capacitanceTime_plot = time;
+		document.write(time, "<br>", val, "<br>");
+		//console.log(val);
+    	capacitanceTime_plot = parseFloat(time) / 1000;
     	capacitanceValue_plot = val;
 	});
 }
@@ -98,7 +98,7 @@ function chartPlot() {
 						chart = this;
 					activeLastPointToolip(chart);
 					setInterval(function () {
-						series.addPoint([capacitanceTime_plot, capacitanceValue_plot], true, true);
+						series.addPoint([capacitanceTime_plot.toFixed(1), capacitanceValue_plot], true, true);
 					}, plotInterval);
 				}
 			}
@@ -108,9 +108,9 @@ function chartPlot() {
 		},
 		xAxis: {
 			title: {
-				text: 'time(ms)'
+				text: 'time(s)'
 			},
-			tickPixelInterval: 200
+			tickPixelInterval: 100
 		},
 		yAxis: {
 			title: {
@@ -131,7 +131,7 @@ function chartPlot() {
 			name: 'capacitance',
 			data: (function () {
 				var data = [],
-					time = capacitanceTime_plot,
+					time = capacitanceTime_plot.toFixed(1),
 					i;
 				for (i = -59; i <= 0; i += 1) {
 					data.push({

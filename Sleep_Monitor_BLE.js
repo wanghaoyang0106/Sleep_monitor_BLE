@@ -98,7 +98,7 @@ function chartPlot() {
 						chart = this;
 					activeLastPointToolip(chart);
 					setInterval(function () {
-						series.addPoint([capacitanceTime_plot.toFixed(1), capacitanceValue_plot], true, true);
+						series.addPoint([capacitanceTime_plot, capacitanceValue_plot], true, true);
 					}, plotInterval);
 				}
 			}
@@ -131,7 +131,7 @@ function chartPlot() {
 			name: 'capacitance',
 			data: (function () {
 				var data = [],
-					time = capacitanceTime_plot.toFixed(1),
+					time = capacitanceTime_plot,
 					i;
 				for (i = -59; i <= 0; i += 1) {
 					data.push({

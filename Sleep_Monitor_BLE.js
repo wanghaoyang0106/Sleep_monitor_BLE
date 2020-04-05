@@ -1,3 +1,8 @@
+console.log(1);
+console.log(2);
+console.log(3);
+console.log(4);
+
 var bluetoothDevice;
 var capacitanceService;
 var capacitanceTime;
@@ -63,8 +68,8 @@ function handleCapacitanceChanged(event) {
 	capacitanceValue.readValue()
 	.then(value => {
 		let val = value.getFloat32(0, true);
-		document.write(time, "<br>", val, "<br>");
-		//console.log(val);
+		//document.write(time, "<br>", val, "<br>");
+		console.log(val);
     	capacitanceTime_plot = parseFloat(time) / 1000;
     	capacitanceValue_plot = val;
 	});

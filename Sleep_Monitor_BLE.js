@@ -19,9 +19,10 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
     })
     .then(server => { // get service and characteristics
         console.log('Getting Service...');
-        capacitanceService = server.getPrimaryService('00001234-0000-0000-0001-000000000000');
-        // return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
-
+        return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
+	})
+	.then(service => {
+		capacitanceService = service;
         console.log('Getting Time Characteristic...');
         capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
         .then(characteristic => characteristic.startNotifications())
@@ -29,8 +30,7 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
             capacitanceTime = characteristic;
             capacitanceTime.addEventListener('characteristicvaluechanged',
             handleCapacitanceChanged);
-        })
-        .catch(error => { console.log(error); });
+        });
 
         console.log('Getting Value Characteristic...');
         capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
@@ -38,8 +38,7 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
             capacitanceValue = characteristic;
         })
         .catch(error => { console.log(error); });
-    })
-    .catch(error => { console.log(error); });
+    });
     
 });
 

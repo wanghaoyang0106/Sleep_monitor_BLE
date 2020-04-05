@@ -22,15 +22,17 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
         return server.getPrimaryService('00001234-0000-0000-0001-000000000000');
 	})
 	.then(service => { // get value characteristic
+		capacitanceService = service;
+
 		console.log('Getting Value Characteristic...');
-        service.getCharacteristic('00001234-0000-0000-0001-000000000002')
+        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000002')
         .then(characteristic => {
             capacitanceValue = characteristic;
 		});
 	})
-	.then(service => { // get time characteristic
+	.then(_ => { // get time characteristic
         console.log('Getting Time Characteristic...');
-        service.getCharacteristic('00001234-0000-0000-0001-000000000001')
+        capacitanceService.getCharacteristic('00001234-0000-0000-0001-000000000001')
         .then(characteristic => characteristic.startNotifications())
         .then(characteristic => {
             capacitanceTime = characteristic;

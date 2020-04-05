@@ -47,7 +47,10 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
 
 function handleCapacitanceChanged(event) {
     let time = event.target.value.getUint32(0, true);
-    let val = capacitanceValue.readValue.getFloat32(0, true);
+	capacitanceValue.readValue()
+	.then(value => {
+		let val = value.getFloat32(0, true);
+	});
     document.write(time, "&#9", val, "<br>");
 }
 

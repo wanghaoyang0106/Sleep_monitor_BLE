@@ -3,8 +3,23 @@
 document.getElementById("fake").onclick = fake_Data;
 
 function fake_Data() {
+    // stop interval refresh and initialize
+    stop_interval();
     initialize();
+
+    get_data_fake();
     draw();
+}
+
+function get_data_fake() {
+    interval_data = setInterval(function () {
+        for (var i = 0; i < refresh_data_num; i++) {
+            if (data.length > data_num) {
+                data.shift();
+            };
+            data.push(fake_sin());
+        }
+    }, refresh_time_ms);
 }
 
 function fake_sin() {
@@ -23,12 +38,10 @@ function fake_sin() {
 //*************************************************************************************************stop
 // set button click event
 document.getElementById("stop").onclick = function() {
-    clearInterval(interval_object);
+    clearInterval(interval_draw);
 };
 
-//*************************************************************************************************draw
-// get the DOM
-var chart_1 = echarts.init(document.getElementById('chart_1'));
+//*************************************************************************************************initial
 
 // some important value
 var refresh_time_ms = 100; // no less than 100
@@ -39,7 +52,13 @@ var count; // data count
 var time; // data time 
 var data; // data list
 var option; // chart option
-var interval_object; // interval loop object
+var interval_draw; // interval loop object
+var interval_data; // interval loop for data update
+
+function stop_interval() {
+    clearInterval(interval_draw);
+    clearInterval(interval_data);
+}
 
 function initialize() {
     count = 0; // data count
@@ -71,21 +90,16 @@ function initialize() {
     };
 }
 
+//*************************************************************************************************draw
+// get the DOM
+var chart_1 = echarts.init(document.getElementById('chart_1'));
+
 function draw() {
     // draw chart
     chart_1.setOption(option);
 
     // set dynamic chart refresh
-    clearInterval(interval_object);
-    interval_object = setInterval(function () {
-    
-        for (var i = 0; i < refresh_data_num; i++) {
-            if (data.length > data_num) {
-                data.shift();
-            };
-            data.push(fake_sin());
-        }
-    
+    interval_draw = setInterval(function () {
         chart_1.setOption({
         series: [{
             data: data

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Haoyang Wang">
+        <meta name="description" content="Collecting and data monitored in sleep (for Binghao).">
+
+        <title>Sleep_Monitor_BLE</title>
+
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    </head>
+    <body>
+        <p>Sleep Monitoring with Bluetooth</p>
+        <p>v4.5</p>
+
+        <button id='start'>Start</button>
+
+        <div id="container" style="min-width:400px;height:400px"></div>
+        
+        <script type="text/javascript" src="Sleep_Monitor_BLE.js"></script>
+        
+    </body>
+</html>

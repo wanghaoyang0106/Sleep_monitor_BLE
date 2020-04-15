@@ -117,7 +117,7 @@ function fake_sin() {
         count: count,
         value: [
             time,
-            Math.sin(time * 6.28) / 2 + 0.5,
+            Math.sin(time * 0.628) / 2 + 0.5,
         ],
     };
     count++;
@@ -136,8 +136,8 @@ function stop_interval() {
 //*************************************************************************************************initial
 
 // some important value
-var refresh_time_ms = 100; // no less than 100
-var refresh_data_num = 10; // better to be less than 18
+var refresh_time_ms = 500; // no less than 100
+var refresh_data_num = 1; // better to be less than 18
 var data_num = 10 * 1000 / refresh_time_ms * refresh_data_num;
 
 var count; // data count

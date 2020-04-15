@@ -79,7 +79,7 @@ function get_data_BLE() {
                 count: count,
                 value: [
                     time,
-                    value.getInt32(0, true) / 1023.0,
+                    value.getFloat32(0, true),
                 ],
             });
             count++;
@@ -164,8 +164,8 @@ function initialize() {
         yAxis: {
             type: 'value',
             name: 'value',
-            min: 0,
-            max: 1,
+            //min: 0,
+            //max: 1,
         },
         series: [{
             name: 'data 1',

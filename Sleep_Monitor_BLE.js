@@ -50,7 +50,6 @@ document.getElementById("start").addEventListener('pointerup', function(event) {
 				});
 				capacitanceTime.addEventListener('characteristicvaluechanged',
 					handleCapacitanceChanged);
-
 			});
 		});
 	})

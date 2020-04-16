@@ -79,7 +79,7 @@ function get_data_BLE() {
                 count: count,
                 value: [
                     time,
-                    value.getFloat32(0, true),
+                    value.getInt32(0, true),
                 ],
             });
             count++;

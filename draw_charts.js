@@ -15,11 +15,17 @@ function BLE_data() {
 var device_name = 'Arduino';
 var service_UUID = '00001234-0000-0000-0001-000000000000';
 var characteristic_1_UUID = '00001234-0000-0000-0001-000000000001'; // time
-var characteristic_2_UUID = '00001234-0000-0000-0001-000000000002'; // value 1
+var characteristic_2_UUID = '00001234-0000-0000-0001-000000000002'; // CAP value
+var characteristic_3_UUID = '00001234-0000-0000-0001-000000000002'; // ECG value
+var characteristic_4_UUID = '00001234-0000-0000-0001-000000000002'; // EOG value
+var characteristic_5_UUID = '00001234-0000-0000-0001-000000000002'; // EMG value
 var BLE_device_handler;
 var service_handler;
 var characteristic_1_handler;
 var characteristic_2_handler;
+var characteristic_3_handler;
+var characteristic_4_handler;
+var characteristic_5_handler;
 
 function BLE_connect() {
     if (BLE_device_handler) {}
@@ -43,16 +49,46 @@ function BLE_connect() {
         })
         .then(service => {
             service_handler = service;
-
-            // get characteristic_2
-            console.log('Getting Value Characteristic...');
-            service_handler.getCharacteristic(characteristic_2_UUID)
+        })
+        // get characteristics
+        .then(service => {
+            console.log('Getting Characteristic 1...');
+            service.getCharacteristic(characteristic_1_UUID)
+            .then(characteristic => {
+                characteristic_1_handler = characteristic;
+            });
+        })
+        .then(service => {
+            console.log('Getting Characteristic 2...');
+            service.getCharacteristic(characteristic_2_UUID)
             .then(characteristic => {
                 characteristic_2_handler = characteristic;
-
-                get_data_BLE();
-                draw();
             });
+        })
+        .then(service => {
+            console.log('Getting Characteristic 3...');
+            service.getCharacteristic(characteristic_3_UUID)
+            .then(characteristic => {
+                characteristic_3_handler = characteristic;
+            });
+        })
+        .then(service => {
+            console.log('Getting Characteristic 4...');
+            service.getCharacteristic(characteristic_4_UUID)
+            .then(characteristic => {
+                characteristic_4_handler = characteristic;
+            });
+        })
+        .then(service => {
+            console.log('Getting Characteristic 5...');
+            service.getCharacteristic(characteristic_5_UUID)
+            .then(characteristic => {
+                characteristic_5_handler = characteristic;
+            });
+        })
+        .then(_ => { // receive data and draw
+            get_data_BLE();
+            draw();
         })
         .catch(error => { console.log(error); });
     }
@@ -177,6 +213,19 @@ function initialize() {
     };
 }
 
+function data_struct_creater(refresh_time_ms, refresh_data_num, duration_time) {
+    var data_struct = {
+        data: [],
+        count: 0, // data count
+        time: 0, // data time 
+        refresh_time_ms: refresh_time_ms, // no less than 100
+        refresh_data_num: refresh_data_num, // better to be less than 18
+        data_num: duration_time * 1000 / refresh_time_ms * refresh_data_num,
+    };
+
+    return data_struct;
+}
+
 //*************************************************************************************************draw
 // get the DOM
 var chart_1 = echarts.init(document.getElementById('chart_1'));
@@ -203,4 +252,43 @@ function draw() {
         }]
         });
     }, refresh_time_ms);
+}
+
+function set_data_interval(data_struct, method) {
+    var interval_data_handler = setInterval(function () {
+        if (data_struct.data.length > data_struct.data_num) {
+            data_struct.data.shift();
+        };
+        data_struct.time = data_struct.count * data_struct.refresh_time_ms / 1000.0 / data_struct.refresh_data_num;
+        data_struct.data.push({
+            count: data_struct.count,
+            value: [
+                data_struct.time,
+                method(),
+            ],
+        });
+        data_struct.count++;
+    }, (data_struct.refresh_time_ms / data_struct.refresh_data_num));
+
+    return interval_data_handler;
+}
+
+function set_data_interval(characteristic_handler, data, data_num, refresh_time_ms, refresh_data_num) {
+    var interval_data_handler = setInterval(function () {
+        if (data.length > data_num) {
+            data.shift();
+        };
+        characteristic_handler.readValue()
+        .then(value => {
+            time = count * refresh_time_ms / 1000.0 / refresh_data_num;
+            data.push({
+                count: count,
+                value: [
+                    time,
+                    value.getInt32(0, true),
+                ],
+            });
+            count++;
+        });
+    }, (refresh_time_ms / refresh_data_num));
 }

@@ -123,15 +123,16 @@ void loop()
       Serial.println(F(") "));
       */
 
-      if (count == 10)
+      // send every 100ms
+      if (count == 100)
       {
         read_time = millis();
         //BLE write
         Time_chara.writeValue(read_time);
-        CAP_chara.writeValue(CAP_val/10);
-        ECG_chara.writeValue(ECG_val/10);
-        EOG_chara.writeValue(EOG_val/10);
-        EMG_chara.writeValue(EMG_val/10);
+        CAP_chara.writeValue(CAP_val/100);
+        ECG_chara.writeValue(ECG_val/100);
+        EOG_chara.writeValue(EOG_val/100);
+        EMG_chara.writeValue(EMG_val/100);
         // reset
         CAP_val = 0;
         ECG_val = 0;

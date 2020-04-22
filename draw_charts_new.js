@@ -377,7 +377,7 @@ async function get_data_BLE(characteristic_handler) {
     .then (value => {
         value_int32 = value.getInt32(0, true);
     });
-    return value_int32;
+    return [value_int32];
 }
 
 //*************************************************************************************************stop

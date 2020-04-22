@@ -309,16 +309,16 @@ function BLE_connect() {
             service_handler = service;
         })
         // get characteristics
-        .then(service => {
+        .then(_ => {
             console.log('Getting Characteristic 1...');
-            service.getCharacteristic(characteristic_1_UUID)
+            service_handler.getCharacteristic(characteristic_1_UUID)
             .then(characteristic => {
                 characteristic_1_handler = characteristic;
             });
         })
-        .then(service => {
+        .then(_ => {
             console.log('Getting Characteristic 2...');
-            service.getCharacteristic(characteristic_2_UUID)
+            service_handler.getCharacteristic(characteristic_2_UUID)
             .then(characteristic => {
                 characteristic_2_handler = characteristic;
                 characteristic_list.push(characteristic_2_handler);
@@ -326,9 +326,9 @@ function BLE_connect() {
                 data_1.start(data_1); // start update data and draw
             });
         })
-        .then(service => {
+        .then(_ => {
             console.log('Getting Characteristic 3...');
-            service.getCharacteristic(characteristic_3_UUID)
+            service_handler.getCharacteristic(characteristic_3_UUID)
             .then(characteristic => {
                 characteristic_3_handler = characteristic;
                 characteristic_list.push(characteristic_3_handler);
@@ -336,9 +336,9 @@ function BLE_connect() {
                 data_2.start(data_2); // start update data and draw
             });
         })
-        .then(service => {
+        .then(_ => {
             console.log('Getting Characteristic 4...');
-            service.getCharacteristic(characteristic_4_UUID)
+            service_handler.getCharacteristic(characteristic_4_UUID)
             .then(characteristic => {
                 characteristic_4_handler = characteristic;
                 characteristic_list.push(characteristic_4_handler);
@@ -346,9 +346,9 @@ function BLE_connect() {
                 data_3.start(data_3); // start update data and draw
             });
         })
-        .then(service => {
+        .then(_ => {
             console.log('Getting Characteristic 5...');
-            service.getCharacteristic(characteristic_5_UUID)
+            service_handler.getCharacteristic(characteristic_5_UUID)
             .then(characteristic => {
                 characteristic_5_handler = characteristic;
                 characteristic_list.push(characteristic_5_handler);

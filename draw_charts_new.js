@@ -372,7 +372,12 @@ function disconnection_handler() {
 }
 
 async function get_data_BLE(characteristic_handler) {
-    return [characteristic_handler.readValue().getInt32(0, true)];
+    var value_int32;
+    characteristic_handler.readValue()
+    .then (value => {
+        value_int32 = value.getInt32(0, true);
+    });
+    return value_int32;
 }
 
 //*************************************************************************************************stop

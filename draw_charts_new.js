@@ -1,4 +1,5 @@
 //*************************************************************************************************initial
+var queue = Promise.resolve();
 //data object
 class Data {
     constructor(chart, option, refresh_time_ms, refresh_data_num, duration_time_s) {
@@ -44,24 +45,27 @@ class Data {
         if (self.get_data_flag == false) { // get_data method not assigned
             throw Error('get_data method and parameters are not assigned!');
         };
-        self.get_data(self.get_data_param)
-        .then(data_list => {
-            if (data_list.length != self.refresh_data_num) { // get_data method not match
-                throw Error('get_data method return length dose not match!');
-            }
-            for (let i = 0; i < self.refresh_data_num; i++) {
-                self.time_update(self);
-                self.data.push({
-                    count: self.count,
-                    value: [
-                        self.time,
-                        data_list[i],
-                    ],
-                });
-                self.count_update(self);
-                //console.log(data_list[i]);
-            }
-            self.trim(self);
+        queue = queue.then(_ => {
+            self.get_data(self.get_data_param)
+            .then(data_list => {
+                if (data_list.length != self.refresh_data_num) { // get_data method not match
+                    throw Error('get_data method return length dose not match!');
+                }
+                for (let i = 0; i < self.refresh_data_num; i++) {
+                    self.time_update(self);
+                    self.data.push({
+                        count: self.count,
+                        value: [
+                            self.time,
+                            data_list[i],
+                        ],
+                    });
+                    self.count_update(self);
+                    //console.log(data_list[i]);
+                }
+                self.trim(self);
+            })
+            .catch(error => { console.log(error); });
         });
     }
 
@@ -372,12 +376,10 @@ function disconnection_handler() {
 }
 
 async function get_data_BLE(characteristic_handler) {
-    var value_int32;
-    characteristic_handler.readValue()
+    return characteristic_handler.readValue()
     .then (value => {
-        value_int32 = value.getInt32(0, true);
+        return [value.getInt32(0, true)];
     });
-    return [value_int32];
 }
 
 //*************************************************************************************************stop

@@ -287,6 +287,7 @@ function BLE_connect() {
         }
     }
     else {
+        stop();
         navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
             filters: [{
                 name: device_name
@@ -321,6 +322,8 @@ function BLE_connect() {
             .then(characteristic => {
                 characteristic_2_handler = characteristic;
                 characteristic_list.push(characteristic_2_handler);
+                data_1.get_data_assign(data_1, get_data_BLE, characteristic_2_handler); // assign data update method
+                data_1.start(data_1); // start update data and draw
             });
         })
         .then(service => {
@@ -329,6 +332,8 @@ function BLE_connect() {
             .then(characteristic => {
                 characteristic_3_handler = characteristic;
                 characteristic_list.push(characteristic_3_handler);
+                data_2.get_data_assign(data_2, get_data_BLE, characteristic_3_handler); // assign data update method
+                data_2.start(data_2); // start update data and draw
             });
         })
         .then(service => {
@@ -337,6 +342,8 @@ function BLE_connect() {
             .then(characteristic => {
                 characteristic_4_handler = characteristic;
                 characteristic_list.push(characteristic_4_handler);
+                data_3.get_data_assign(data_3, get_data_BLE, characteristic_4_handler); // assign data update method
+                data_3.start(data_3); // start update data and draw
             });
         })
         .then(service => {
@@ -345,16 +352,9 @@ function BLE_connect() {
             .then(characteristic => {
                 characteristic_5_handler = characteristic;
                 characteristic_list.push(characteristic_5_handler);
+                data_4.get_data_assign(data_4, get_data_BLE, characteristic_5_handler); // assign data update method
+                data_4.start(data_4); // start update data and draw
             });
-        })
-        .then(_ => {
-            for (let i = 0; i < data_list.length; i++) {
-                let data = data_list[i];
-                data.stop(data); // stop everything currently running
-                data.reset(data); // reset data
-                data.get_data_assign(data, get_data_BLE, characteristic_list[i]); // assign data update method
-                data.start(data); // start update data and draw
-            }
         })
         .catch(error => { console.log(error); });
     }

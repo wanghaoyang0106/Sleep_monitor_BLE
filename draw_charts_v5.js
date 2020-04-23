@@ -85,14 +85,20 @@ class Data {
 
     draw_whole(self) {
         // rewrite some option
-        //self.option.xAxis.min = self.data[0].value[0];
-        //self.option.xAxis.max = self.data[0].value[0] + self.data_num * self.refresh_time_ms / 1000.0 / self.refresh_data_num;
+        let min;
+        if (self.data.length > 0) {min = self.data[0].value[0];}
+        else {min = 0;}
+        self.option.xAxis.min = min;
+        self.option.xAxis.max = min + self.data_num * self.refresh_time_ms / 1000.0 / self.refresh_data_num;
         self.option.series.data = self.data;
         // draw the whole chart
         self.chart.setOption(self.option);
     }
 
     draw_update(self) {
+        let min;
+        if (self.data.length > 0) {min = self.data[0].value[0];}
+        else {min = 0;}
         self.chart.setOption({
             series: [{
                 data: self.data,
@@ -104,8 +110,8 @@ class Data {
             splitLine: {
                 show: false,
             },
-            min: self.data[0].value[0],
-            max: self.data[0].value[0] + self.data_num * self.refresh_time_ms / 1000.0 / self.refresh_data_num,
+            min: min,
+            max: min + self.data_num * self.refresh_time_ms / 1000.0 / self.refresh_data_num,
         }]
         });
     }
@@ -291,7 +297,6 @@ function BLE_connect() {
         }
     }
     else {
-        stop();
         navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
             filters: [{
                 name: device_name
@@ -315,50 +320,51 @@ function BLE_connect() {
         // get characteristics
         .then(_ => {
             console.log('Getting Characteristic 1...');
-            service_handler.getCharacteristic(characteristic_1_UUID)
-            .then(characteristic => {
-                characteristic_1_handler = characteristic;
-            });
+            return service_handler.getCharacteristic(characteristic_1_UUID);
+        })
+        .then(characteristic => {
+            characteristic_1_handler = characteristic;
         })
         .then(_ => {
             console.log('Getting Characteristic 2...');
-            service_handler.getCharacteristic(characteristic_2_UUID)
-            .then(characteristic => {
-                characteristic_2_handler = characteristic;
-                characteristic_list.push(characteristic_2_handler);
-                data_1.get_data_assign(data_1, get_data_BLE, characteristic_2_handler); // assign data update method
-                data_1.start(data_1); // start update data and draw
-            });
+            return service_handler.getCharacteristic(characteristic_2_UUID);
+        })
+        .then(characteristic => {
+            characteristic_2_handler = characteristic;
+            characteristic_list.push(characteristic_2_handler);
         })
         .then(_ => {
             console.log('Getting Characteristic 3...');
-            service_handler.getCharacteristic(characteristic_3_UUID)
-            .then(characteristic => {
-                characteristic_3_handler = characteristic;
-                characteristic_list.push(characteristic_3_handler);
-                data_2.get_data_assign(data_2, get_data_BLE, characteristic_3_handler); // assign data update method
-                data_2.start(data_2); // start update data and draw
-            });
+            return service_handler.getCharacteristic(characteristic_3_UUID);
+        })
+        .then(characteristic => {
+            characteristic_3_handler = characteristic;
+            characteristic_list.push(characteristic_3_handler);
         })
         .then(_ => {
             console.log('Getting Characteristic 4...');
-            service_handler.getCharacteristic(characteristic_4_UUID)
-            .then(characteristic => {
-                characteristic_4_handler = characteristic;
-                characteristic_list.push(characteristic_4_handler);
-                data_3.get_data_assign(data_3, get_data_BLE, characteristic_4_handler); // assign data update method
-                data_3.start(data_3); // start update data and draw
-            });
+            return service_handler.getCharacteristic(characteristic_4_UUID);
+        })
+        .then(characteristic => {
+            characteristic_4_handler = characteristic;
+            characteristic_list.push(characteristic_4_handler);
         })
         .then(_ => {
             console.log('Getting Characteristic 5...');
-            service_handler.getCharacteristic(characteristic_5_UUID)
-            .then(characteristic => {
-                characteristic_5_handler = characteristic;
-                characteristic_list.push(characteristic_5_handler);
-                data_4.get_data_assign(data_4, get_data_BLE, characteristic_5_handler); // assign data update method
-                data_4.start(data_4); // start update data and draw
-            });
+            return service_handler.getCharacteristic(characteristic_5_UUID);
+        })
+        .then(characteristic => {
+            characteristic_5_handler = characteristic;
+            characteristic_list.push(characteristic_5_handler);
+        })
+        then(_ => {
+            for (let i = 0; i < data_list.length; i++) {
+                let data = data_list[i];
+                data.stop(data); // stop everything currently running
+                data.reset(data); // reset data
+                data.get_data_assign(data, get_data_BLE, characteristic_list[i]); // assign data update method
+                data.start(data); // start update data and draw
+            }
         })
         .catch(error => { console.log(error); });
     }

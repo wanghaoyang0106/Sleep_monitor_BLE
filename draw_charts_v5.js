@@ -46,7 +46,8 @@ class Data {
             throw Error('get_data method and parameters are not assigned!');
         };
         queue = queue.then(_ => {
-            self.get_data(self.get_data_param);
+            console.log('> read value from: ' + self.get_data_param.uuid);
+            return self.get_data(self.get_data_param);
         })
         .then(data_list => {
             if (data_list.length != self.refresh_data_num) { // get_data method not match
@@ -62,9 +63,9 @@ class Data {
                     ],
                 });
                 self.count_update(self);
-                //console.log(data_list[i]);
             }
             self.trim(self);
+            console.log('> load value from: ' + self.get_data_param.uuid);
         })
         .catch(error => { console.log(error); });
 
@@ -162,7 +163,7 @@ var option_1 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_1 = new Data(chart_1, option_1, 100, 1, 10);
+var data_1 = new Data(chart_1, option_1, 1000, 1, 10);
 data_list.push(data_1);
 
 var chart_2 = echarts.init(document.getElementById('chart_2'));
@@ -187,7 +188,7 @@ var option_2 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_2 = new Data(chart_2, option_2, 100, 1, 10);
+var data_2 = new Data(chart_2, option_2, 1000, 1, 10);
 data_list.push(data_2);
 
 var chart_3 = echarts.init(document.getElementById('chart_3'));
@@ -212,7 +213,7 @@ var option_3 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_3 = new Data(chart_3, option_3, 100, 1, 10);
+var data_3 = new Data(chart_3, option_3, 1000, 1, 10);
 data_list.push(data_3);
 
 var chart_4 = echarts.init(document.getElementById('chart_4'));
@@ -237,7 +238,7 @@ var option_4 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_4 = new Data(chart_4, option_4, 100, 1, 10);
+var data_4 = new Data(chart_4, option_4, 1000, 1, 10);
 data_list.push(data_4);
 
 
@@ -298,11 +299,13 @@ function BLE_connect() {
         }
     }
     else {
-        navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
-            filters: [{
-                name: device_name
-            }],
-            optionalServices: [service_UUID]
+        queue = queue.then(_ => {
+            return navigator.bluetooth.requestDevice({ // scan for the designated BLE peripheral
+                filters: [{
+                    name: device_name
+                }],
+                optionalServices: [service_UUID]
+            })
         })
         .then(device => { // connect to the device
             console.log(device.name);
@@ -358,7 +361,9 @@ function BLE_connect() {
             characteristic_5_handler = characteristic;
             characteristic_list.push(characteristic_5_handler);
         })
-        then(_ => {
+        .catch(error => { console.log(error); });
+
+        queue = queue.then(_ => {
             for (let i = 0; i < data_list.length; i++) {
                 let data = data_list[i];
                 data.stop(data); // stop everything currently running
@@ -366,8 +371,7 @@ function BLE_connect() {
                 data.get_data_assign(data, get_data_BLE, characteristic_list[i]); // assign data update method
                 data.start(data); // start update data and draw
             }
-        })
-        .catch(error => { console.log(error); });
+        });
     }
 }
 
@@ -383,6 +387,7 @@ function disconnection_handler() {
 }
 
 async function get_data_BLE(characteristic_handler) {
+    console.log('> call BLE API from: ' + characteristic_handler.uuid);
     return characteristic_handler.readValue()
     .then (value => {
         return [value.getInt32(0, true)];

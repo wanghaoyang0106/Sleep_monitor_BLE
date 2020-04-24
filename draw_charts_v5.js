@@ -46,27 +46,28 @@ class Data {
             throw Error('get_data method and parameters are not assigned!');
         };
         queue = queue.then(_ => {
-            self.get_data(self.get_data_param)
-            .then(data_list => {
-                if (data_list.length != self.refresh_data_num) { // get_data method not match
-                    throw Error('get_data method return length dose not match!');
-                }
-                for (let i = 0; i < self.refresh_data_num; i++) {
-                    self.time_update(self);
-                    self.data.push({
-                        count: self.count,
-                        value: [
-                            self.time,
-                            data_list[i],
-                        ],
-                    });
-                    self.count_update(self);
-                    //console.log(data_list[i]);
-                }
-                self.trim(self);
-            })
-            .catch(error => { console.log(error); });
-        });
+            self.get_data(self.get_data_param);
+        })
+        .then(data_list => {
+            if (data_list.length != self.refresh_data_num) { // get_data method not match
+                throw Error('get_data method return length dose not match!');
+            }
+            for (let i = 0; i < self.refresh_data_num; i++) {
+                self.time_update(self);
+                self.data.push({
+                    count: self.count,
+                    value: [
+                        self.time,
+                        data_list[i],
+                    ],
+                });
+                self.count_update(self);
+                //console.log(data_list[i]);
+            }
+            self.trim(self);
+        })
+        .catch(error => { console.log(error); });
+
     }
 
     time_update(self) {

@@ -1,5 +1,8 @@
 //*************************************************************************************************initial
 var queue = Promise.resolve();
+var time_start;
+var time_finish;
+
 //data object
 class Data {
     constructor(chart, option, refresh_time_ms, refresh_data_num, duration_time_s) {
@@ -47,9 +50,11 @@ class Data {
         };
         queue = queue.then(_ => {
             console.log('> read value from: ' + self.get_data_param.uuid);
+            time_start = Date.now();
             return self.get_data(self.get_data_param);
         })
         .then(data_list => {
+            time_finish = Date.now();
             if (data_list.length != self.refresh_data_num) { // get_data method not match
                 throw Error('get_data method return length dose not match!');
             }
@@ -66,6 +71,7 @@ class Data {
             }
             self.trim(self);
             console.log('> load value from: ' + self.get_data_param.uuid);
+            console.log('> time for characteristic API call: ' + (time_finish - time_start).toString());
         })
         .catch(error => { console.log(error); });
 
@@ -251,13 +257,13 @@ function fake_data() {
         let data = data_list[i];
         data.stop(data); // stop everything currently running
         data.reset(data); // reset data
-        data.get_data_assign(data, fake_sin, null); // assign data update method
+        data.get_data_assign(data, fake_sin, {uuid:'fake'+i.toString()}); // assign data update method
         data.start(data); // start update data and draw
     }
 }
 
 async function fake_sin(param) {
-    return [Math.sin(Date.now() / 1000.0 * 6.28 * 1) / 2 + 0.5];
+    return [Math.sin(Date.now() / 1000.0 * 6.28 * 0.1) / 2 + 0.5];
 }
 
 //*************************************************************************************************assign data update method: BLE
@@ -276,9 +282,9 @@ var device_name = 'Arduino';
 var service_UUID = '00001234-0000-0000-0001-000000000000';
 var characteristic_1_UUID = '00001234-0000-0000-0001-000000000001'; // time
 var characteristic_2_UUID = '00001234-0000-0000-0001-000000000002'; // CAP value
-var characteristic_3_UUID = '00001234-0000-0000-0001-000000000002'; // ECG value
-var characteristic_4_UUID = '00001234-0000-0000-0001-000000000002'; // EOG value
-var characteristic_5_UUID = '00001234-0000-0000-0001-000000000002'; // EMG value
+var characteristic_3_UUID = '00001234-0000-0000-0001-000000000003'; // ECG value
+var characteristic_4_UUID = '00001234-0000-0000-0001-000000000004'; // EOG value
+var characteristic_5_UUID = '00001234-0000-0000-0001-000000000005'; // EMG value
 var BLE_device_handler;
 var service_handler;
 var characteristic_1_handler;
@@ -387,7 +393,6 @@ function disconnection_handler() {
 }
 
 async function get_data_BLE(characteristic_handler) {
-    console.log('> call BLE API from: ' + characteristic_handler.uuid);
     return characteristic_handler.readValue()
     .then (value => {
         return [value.getInt32(0, true)];

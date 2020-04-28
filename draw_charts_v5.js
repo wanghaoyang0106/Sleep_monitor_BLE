@@ -169,7 +169,7 @@ var option_1 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_1 = new Data(chart_1, option_1, 1000, 1, 10);
+var data_1 = new Data(chart_1, option_1, 100, 1, 10);
 data_list.push(data_1);
 
 var chart_2 = echarts.init(document.getElementById('chart_2'));
@@ -194,7 +194,7 @@ var option_2 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_2 = new Data(chart_2, option_2, 1000, 1, 10);
+var data_2 = new Data(chart_2, option_2, 100, 1, 10);
 data_list.push(data_2);
 
 var chart_3 = echarts.init(document.getElementById('chart_3'));
@@ -219,7 +219,7 @@ var option_3 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_3 = new Data(chart_3, option_3, 1000, 1, 10);
+var data_3 = new Data(chart_3, option_3, 100, 1, 10);
 data_list.push(data_3);
 
 var chart_4 = echarts.init(document.getElementById('chart_4'));
@@ -244,7 +244,7 @@ var option_4 = { // chart option
         hoverAnimation: false,
     }]
 };
-var data_4 = new Data(chart_4, option_4, 1000, 1, 10);
+var data_4 = new Data(chart_4, option_4, 100, 1, 10);
 data_list.push(data_4);
 
 
@@ -262,7 +262,7 @@ function fake_data() {
     }
 }
 
-async function fake_sin(param) {
+function fake_sin(param) {
     return [Math.sin(Date.now() / 1000.0 * 6.28 * 0.1) / 2 + 0.5];
 }
 
@@ -392,7 +392,7 @@ function disconnection_handler() {
     // TODO: reconnect
 }
 
-async function get_data_BLE(characteristic_handler) {
+function get_data_BLE(characteristic_handler) {
     return characteristic_handler.readValue()
     .then (value => {
         return [value.getInt32(0, true)];

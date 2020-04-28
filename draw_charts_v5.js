@@ -263,7 +263,7 @@ function fake_data() {
 }
 
 function fake_sin(param) {
-    return [Math.sin(Date.now() / 1000.0 * 6.28 * 0.1) / 2 + 0.5];
+    return [Math.sin(Date.now() / 1000.0 * 6.28 * 1) / 2 + 0.5];
 }
 
 //*************************************************************************************************assign data update method: BLE
